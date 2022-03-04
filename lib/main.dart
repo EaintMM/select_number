@@ -32,6 +32,34 @@ class _SelectNumberState extends State<SelectNumber> {
   int correctAnswer = 0;
   int score = 0;
   String msg = '';
+
+  // custom image widget
+  Widget imageList(List<int> images) => Column(
+        children: images
+            .map((e) => InkWell(
+                  onTap: () {
+                    if (e == correctAnswer) {
+                      setState(() {
+                        score++;
+                        msg = "Your answer is correct";
+                      });
+                    } else {
+                      setState(() {
+                        msg = 'Your answer is not correct';
+                      });
+                    }
+                  },
+                  child: Ink(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage('images/$e.png'))),
+                  ),
+                ))
+            .toList(),
+      );
+
   @override
   Widget build(BuildContext context) {
     numbers.shuffle();
@@ -43,49 +71,21 @@ class _SelectNumberState extends State<SelectNumber> {
         body: Padding(
           padding: const EdgeInsets.all(10),
           child: Center(
-
               child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text("select the number $correctAnswer"),
-              Column(
-                children: images
-                    .map((e) => InkWell(
-                          onTap: () {
-                            if (e == correctAnswer) {
-                              setState(() {
-                                score++;
-                                msg = "Your answer is correct";
-                              });
-                            } else {
-                              setState(() {
-                                msg = 'Your answer is not correct';
-                              });
-                            }
-                          },
-                          child: Ink(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage('images/$e.png'))),
-                          ),
-                        ))
-                    .toList(),
-              ),
+              imageList(images),
               Text(msg),
               TextButton(
-                style: TextButton.styleFrom(
-                  primary: Colors.black,
-                  backgroundColor: Colors.blue,
-                ),
-                onPressed:(() {
-                  setState(() {
-                    
-                  });
-                }) 
-              , 
-              child: const Text("Refresh")),
+                  style: TextButton.styleFrom(
+                    primary: Colors.black,
+                    backgroundColor: Colors.blue,
+                  ),
+                  onPressed: (() {
+                    setState(() {});
+                  }),
+                  child: const Text("Refresh")),
               Text('Your score : $score'),
             ],
           )),
