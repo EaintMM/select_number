@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +33,28 @@ class _SelectNumberState extends State<SelectNumber> {
   int correctAnswer = 0;
   int score = 0;
   String msg = '';
+  SharedPreferences? prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    loadScore();
+  }
+
+  saveScore(int newScore) async {
+    prefs = await SharedPreferences.getInstance();
+    await prefs!.setInt("score", newScore);
+  }
+
+  loadScore() async {
+    prefs = await SharedPreferences.getInstance();
+    var myscore = prefs?.getInt("score");
+    if (myscore != null) {
+      setState(() {
+        score = myscore;
+      });
+    }
+  }
 
   // custom image widget
   Widget imageList(List<int> images) => Column(
@@ -41,6 +64,7 @@ class _SelectNumberState extends State<SelectNumber> {
                     if (e == correctAnswer) {
                       setState(() {
                         score++;
+                        saveScore(score);
                         msg = "Your answer is correct";
                       });
                     } else {
